@@ -1,6 +1,10 @@
 <template>
   <div>
+    <div class="loding" v-if="loding" @touchmove.stop.prevent="()=>{}" >
+      <div class="round"></div>
+    </div>
     <div class="HotBox">
+      
       <div class="hotTitle">火爆商品</div>
 
       <div class="hotCon">
@@ -64,8 +68,8 @@
           <router-view></router-view>
         </ul>
       </div>
-    </div>
 
+  </div>
   </div>
 </template>
 
@@ -76,15 +80,20 @@ export default {
   data() {
     return {
       listData: [],
-      listDataTop: []
+      listDataTop: [],
+      loding: false
     };
   },
   methods: {
     findlistData() {
+      this.loding = true
       axios({
         url: "https://dahua0822-api.herokuapp.com/goods",
         method: "get",
       }).then((res) => {
+        if (res.status === 200) {
+          this.loding = false
+        }
         console.log(res)
         this.listData = res.data.data.data;
         this.listDataTop = res.data.data.top
@@ -294,5 +303,35 @@ ul::-webkit-scrollbar {
 .active {
   background-color: rgba(255, 230, 148, 1);
 }
+.loding {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+}
 
+.round {
+  width: 80px;
+  height: 80px;
+  border: 6px solid;
+  border-radius: 50%;
+  border-color: #fff transparent #fff transparent;
+  animation: loading 1s linear infinite;
+}
+
+@keyframes loading {
+  from {
+    transform: rotale(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

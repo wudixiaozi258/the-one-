@@ -1,5 +1,8 @@
 <template>
     <div>
+      <div class="loding" v-if="loding" @touchmove.stop.prevent="()=>{}" >
+      <div class="round"></div>
+    </div>
         <li v-for="item in listData" :key="item.id">
           <div class="listImg"><img :src="item.image" ref="img" alt="" /></div>
 
@@ -19,14 +22,19 @@
       data() {
     return {
       listData: [],
+      loding: false
     };
   },
   methods: {
     findlistData() {
+      this.loding = true
       axios({
         url: "https://dahua0822-api.herokuapp.com/goods?sort=style",
         method: "get",
       }).then((res) => {
+        if (res.status === 200) {
+          this.loding = false
+        }
         console.log(res)
         this.listData = res.data.data.data;
       });
